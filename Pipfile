@@ -11,6 +11,7 @@ pytest = "*"
 pyyaml = "*"
 scipy = "*"
 dotenv = "*"
+flake8 = "*"
 
 [dev-packages]
 
