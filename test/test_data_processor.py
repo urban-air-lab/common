@@ -1,6 +1,6 @@
 import pandas as pd
 import pytest
-from app.data_processor import align_dataframes_by_time, calculate_w_a_difference
+from ual.data_processor import align_dataframes_by_time, calculate_w_a_difference
 
 
 def test_no_gases_list_raises_value_error():

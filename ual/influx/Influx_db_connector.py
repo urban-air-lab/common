@@ -3,9 +3,6 @@ import os
 from dotenv import load_dotenv
 from influxdb_client import InfluxDBClient
 import pandas as pd
-from app.get_config import get_config
-
-
 
 
 class InfluxDBConnector:

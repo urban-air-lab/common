@@ -1,4 +1,4 @@
-from app.get_config import _get_caller_directory, get_config
+from ual.get_config import _get_caller_directory, get_config
 
 
 def test_get_caller_directory_test_is_in_path():
