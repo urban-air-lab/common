@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "common"
+version = "0.1.0"
+description = "Utilities shared across UrbanAirLab projects"
+readme = "README.md"
+authors = [
+  { name = "UrbanAirLab", email = "Marc.Golder@hs-heilbronn.de" },
+]
+requires-python = ">=3.8"
+dependencies = [
+  "numpy",
+  "pandas",
+  "influxdb-client",
+  "pandas",
+  "paho-mqtt",
+  "pytest",
+  "pyyaml",
+  "scipy",
+  "dotenv",
+  "flake8",
+]
+
+[project.urls]
+Homepage = "https://github.com/urban-air-lab/common"
