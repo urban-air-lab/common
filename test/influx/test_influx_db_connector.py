@@ -1,9 +1,9 @@
 import os
 import pytest
 
-from app.database.Influx_db_connector import InfluxDBConnector
-from app.database.influx_buckets import InfluxBuckets
-from app.database.influx_query_builder import InfluxQueryBuilder
+from app.influx.Influx_db_connector import InfluxDBConnector
+from app.influx.influx_buckets import InfluxBuckets
+from app.influx.influx_query_builder import InfluxQueryBuilder
 
 IN_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
 

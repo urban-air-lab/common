@@ -1,6 +1,6 @@
 import re
 
-from app.database.influx_buckets import InfluxBuckets
+from app.influx.influx_buckets import InfluxBuckets
 
 
 class InfluxQueryBuilder:
