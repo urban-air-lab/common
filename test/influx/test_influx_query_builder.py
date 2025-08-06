@@ -70,3 +70,12 @@ def test_builder_bucket_range_measurement_fields():
         .set_fields(["CO", "NO"]) \
         .build()
     assert query == '''from(bucket: "ual-minute-calibration")|> range(start: 2024-10-22T00:00:00Z, stop: 2024-10-22T23:00:00Z)|> filter(fn: (r) => r.topic == "sensors/calibration/ual-1")|> filter(fn: (r) => r._field == "CO" or r._field == "NO")|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")'''
+
+
+def test_builder_bucket_range_to_0():
+    query = (InfluxQueryBuilder()
+             .set_bucket(InfluxBuckets.UAL_MINUTE_CALIBRATION_BUCKET.value)
+             .set_range_to_start_0()
+             .set_topic("ual-1")
+             .build())
+    assert query == '''from(bucket: "ual-minute-calibration")|> range(start:0)|> filter(fn: (r) => r.topic == "sensors/calibration/ual-1")|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")'''

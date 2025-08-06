@@ -34,6 +34,10 @@ class InfluxQueryBuilder:
         self._range = f'''|> range(start: {start_date}, stop: {stop_date})'''
         return self
 
+    def set_range_to_start_0(self):
+        self._range = f'''|> range(start:0)'''
+        return self
+
     def set_topic(self, sensor: str):
         self._topic = f'''|> filter(fn: (r) => r.topic == "{self._build_topic(sensor)}")'''
         return self
