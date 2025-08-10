@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import re
 
 from ual.influx.influx_buckets import InfluxBuckets
@@ -26,11 +27,13 @@ class InfluxQueryBuilder:
         self._bucket = f'''from(bucket: "{bucket}")'''
         return self
 
-    def set_range(self, start_date: str, stop_date: str):
+    def set_range(self, start_date: str, stop_date: str, inclusive=False):
         valid_start = self._is_valid_iso8601_utc(start_date)
         valid_end = self._is_valid_iso8601_utc(stop_date)
         if not valid_start & valid_end:
             raise ValueError("No valid date format - must be yyyy-mm-ddTHH:MM:SSZ")
+        if inclusive:
+            stop_date = self._add_one_min(stop_date)
         self._range = f'''|> range(start: {start_date}, stop: {stop_date})'''
         return self
 
@@ -84,3 +87,8 @@ class InfluxQueryBuilder:
         if not re.match(pattern, date):
             return False
         return True
+
+    def _add_one_min(self, ts_str: str) -> str:
+        ts = datetime.strptime(ts_str, "%Y-%m-%dT%H:%M:%SZ")
+        ts_plus_1min = ts + timedelta(minutes=1)
+        return ts_plus_1min.strftime("%Y-%m-%dT%H:%M:%SZ")

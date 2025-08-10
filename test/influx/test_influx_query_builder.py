@@ -53,7 +53,7 @@ def test_builder_bucket_range_end_date():
             .build()
 
 
-def test_builder_bucket_range_measurement():
+def test_builder_bucket_range_topic():
     query = InfluxQueryBuilder() \
         .set_bucket(InfluxBuckets.UAL_MINUTE_CALIBRATION_BUCKET.value) \
         .set_range("2024-10-22T00:00:00Z", "2024-10-22T23:00:00Z") \
@@ -62,7 +62,7 @@ def test_builder_bucket_range_measurement():
     assert query == '''from(bucket: "ual-minute-calibration")|> range(start: 2024-10-22T00:00:00Z, stop: 2024-10-22T23:00:00Z)|> filter(fn: (r) => r.topic == "sensors/calibration/ual-1")|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")'''
 
 
-def test_builder_bucket_range_measurement_fields():
+def test_builder_bucket_range_topic_fields():
     query = InfluxQueryBuilder() \
         .set_bucket(InfluxBuckets.UAL_MINUTE_CALIBRATION_BUCKET.value) \
         .set_range("2024-10-22T00:00:00Z", "2024-10-22T23:00:00Z") \
@@ -79,3 +79,21 @@ def test_builder_bucket_range_to_0():
              .set_topic("ual-1")
              .build())
     assert query == '''from(bucket: "ual-minute-calibration")|> range(start:0)|> filter(fn: (r) => r.topic == "sensors/calibration/ual-1")|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")'''
+
+
+def test_builder_bucket_add_one_minute():
+    query = InfluxQueryBuilder() \
+        .set_bucket(InfluxBuckets.UAL_MINUTE_CALIBRATION_BUCKET.value) \
+        .set_range("2024-10-22T00:00:00Z", "2024-10-22T23:00:00Z", True) \
+        .set_topic("ual-1") \
+        .build()
+    assert query == '''from(bucket: "ual-minute-calibration")|> range(start: 2024-10-22T00:00:00Z, stop: 2024-10-22T23:01:00Z)|> filter(fn: (r) => r.topic == "sensors/calibration/ual-1")|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")'''
+
+
+def test_builder_bucket_add_not_one_minute():
+    query = InfluxQueryBuilder() \
+        .set_bucket(InfluxBuckets.UAL_MINUTE_CALIBRATION_BUCKET.value) \
+        .set_range("2024-10-22T00:00:00Z", "2024-10-22T23:00:00Z", False) \
+        .set_topic("ual-1") \
+        .build()
+    assert query == '''from(bucket: "ual-minute-calibration")|> range(start: 2024-10-22T00:00:00Z, stop: 2024-10-22T23:00:00Z)|> filter(fn: (r) => r.topic == "sensors/calibration/ual-1")|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")'''
