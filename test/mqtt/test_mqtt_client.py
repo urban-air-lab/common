@@ -3,9 +3,11 @@ import pandas as pd
 import random
 import time
 import pytest
+from dotenv import load_dotenv
 
 from ual.mqtt.mqtt_client import MQTTClient
 
+load_dotenv()
 IN_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
 
 
@@ -20,5 +22,5 @@ def get_sensor_data():
 @pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Test doesn't work in Github Actions.")
 def test_publish_single():
     data = get_sensor_data()
-    mqtt_client = MQTTClient()
+    mqtt_client = MQTTClient(os.getenv("MQTT_SERVER"), int(os.getenv("MQTT_PORT")), os.getenv("MQTT_USERNAME"), os.getenv("MQTT_PASSWORD"))
     mqtt_client.publish_dataframe(data=data, topic="sensors/test-data/test")

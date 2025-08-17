@@ -7,10 +7,10 @@ import paho.mqtt.publish as publish
 
 
 class MQTTClient:
-    def __init__(self):
-        self.server = os.getenv("MQTT_SERVER")
-        self.port = int(os.getenv("MQTT_PORT", 1883))
-        self.auth = {'username': os.getenv("MQTT_USERNAME"), 'password': os.getenv("MQTT_PASSWORD")}
+    def __init__(self, server: str, port: int, username: str, password: str):
+        self.server: str = server
+        self.port: int = port
+        self.auth: dict = {'username': username, 'password': password}
 
     def publish_dataframe(self, data: pd.DataFrame, topic: str, qos: int = 2) -> None:
         try:
