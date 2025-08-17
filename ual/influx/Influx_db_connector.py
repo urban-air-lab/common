@@ -1,30 +1,26 @@
-import os
-
-from dotenv import load_dotenv
 from influxdb_client import InfluxDBClient
 import pandas as pd
+from influxdb_client.client.flux_table import TableList
 
 
 class InfluxDBConnector:
-    def __init__(self):
+    def __init__(self, url: str, token: str, organization: str) -> None:
         """
         Initializes the InfluxDBConnector class.
 
         :param url: InfluxDB server URL
-        :param token: Authentication token for InfluxDB
-        :param org: InfluxDB organization name
-        :param bucket: InfluxDB bucket name
+        :param token: InfluxDB authentication token
+        :param organization: InfluxDB organization name
         """
-        load_dotenv()
-        self.url = os.getenv("INFLUX_URL")
-        self.token = os.getenv("INFLUX_TOKEN")
-        self.org = os.getenv("INFLUX_ORG")
+        self.url = url
+        self.token = token
+        self.organization = organization
         self.timeout = 60000
 
-        self.client = InfluxDBClient(url=self.url, token=self.token, org=self.org)
+        self.client = InfluxDBClient(url=self.url, token=self.token, org=self.organization)
         self.query_api = self.client.query_api()
 
-    def query(self, query: str):
+    def query(self, query: str) -> TableList:
         return self.query_api.query(query)
 
     def query_dataframe(self, query: str) -> pd.DataFrame:

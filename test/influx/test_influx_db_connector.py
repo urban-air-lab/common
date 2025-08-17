@@ -1,5 +1,6 @@
 import os
 import pytest
+from dotenv import load_dotenv
 
 from ual.influx.Influx_db_connector import InfluxDBConnector
 from ual.influx.influx_buckets import InfluxBuckets
@@ -7,10 +8,11 @@ from ual.influx.influx_query_builder import InfluxQueryBuilder
 
 IN_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
 
+load_dotenv()
 
 @pytest.fixture
 def database_connection():
-    connection = InfluxDBConnector()
+    connection = InfluxDBConnector(os.getenv("INFLUX_URL"), os.getenv("INFLUX_TOKEN"), os.getenv("INFLUX_ORG"))
     yield connection
 
 
