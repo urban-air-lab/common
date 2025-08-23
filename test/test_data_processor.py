@@ -17,7 +17,7 @@ def test_empty_dataframe_raises_value_error():
     df_empty = pd.DataFrame()
     with pytest.raises(ValueError) as e:
         calculate_w_a_difference(df_empty, ['NO'])
-    assert "dataframe is empty" in str(e.value)
+    assert "Dataframe is empty" in str(e.value)
 
 
 def test_basic_NO_CO_difference():
