@@ -4,10 +4,10 @@ from scipy import stats
 
 
 class DataProcessor:
-    def __init__(self, inputs, targets):
+    def __init__(self, inputs: pd.DataFrame, targets: pd.DataFrame = None):
         if not isinstance(inputs.index, pd.DatetimeIndex):
             raise ValueError("The inputs index must be a DatetimeIndex.")
-        if not isinstance(targets.index, pd.DatetimeIndex):
+        if targets is not None and not isinstance(targets.index, pd.DatetimeIndex):
             raise ValueError("The targets index must be a DatetimeIndex.")
 
         self.inputs = inputs
@@ -15,12 +15,14 @@ class DataProcessor:
 
     def to_hourly(self):
         self.inputs = self.inputs.resample("h").mean()
-        self.targets = self.targets.resample("h").mean()
+        if self.targets is not None:
+            self.targets = self.targets.resample("h").mean()
         return self
 
     def to_daily(self):
         self.inputs = self.inputs.resample("d").mean()
-        self.targets = self.targets.resample("d").mean()
+        if self.targets is not None:
+            self.targets = self.targets.resample("d").mean()
         return self
 
     def remove_outliers(self, outlier_range=3):
@@ -31,11 +33,13 @@ class DataProcessor:
 
     def remove_nan(self):
         self.inputs = self.inputs.dropna()
-        self.targets = self.targets.dropna()
+        if self.targets is not None:
+            self.targets = self.targets.dropna()
         return self
 
     def align_dataframes_by_time(self):
-        self.inputs, self.targets = align_dataframes_by_time(self.inputs, self.targets)
+        if self.targets is not None:
+            self.inputs, self.targets = align_dataframes_by_time(self.inputs, self.targets)
         return self
 
     def calculate_w_a_difference(self):
@@ -47,6 +51,8 @@ class DataProcessor:
         return self.inputs
 
     def get_target(self, target):
+        if self.targets is None:
+            raise ValueError("No targets were provided to DataProcessor.")
         return self.targets[target]
 
 
@@ -54,7 +60,7 @@ def calculate_w_a_difference(dataframe: pd.DataFrame, gases: list) -> pd.DataFra
     if not gases:
         raise ValueError("No gases in list")
     if dataframe.empty:
-        raise ValueError("dataframe is empty")
+        raise ValueError("Dataframe is empty")
     for gas in gases:
         w_column = f"RAW_ADC_{gas}_W"
         a_column = f"RAW_ADC_{gas}_A"
