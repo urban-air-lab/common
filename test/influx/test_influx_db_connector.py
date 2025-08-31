@@ -1,38 +1,59 @@
-import os
+import pandas as pd
+from unittest.mock import MagicMock, patch
+
 import pytest
-from dotenv import load_dotenv
 
 from ual.influx.Influx_db_connector import InfluxDBConnector
-from ual.influx.influx_buckets import InfluxBuckets
-from ual.influx.influx_query_builder import InfluxQueryBuilder
-
-IN_GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
-
-load_dotenv()
 
 
-@pytest.fixture
-def database_connection():
-    connection = InfluxDBConnector(os.getenv("INFLUX_URL"), os.getenv("INFLUX_TOKEN"), os.getenv("INFLUX_ORG"))
-    yield connection
+def test_init():
+    InfluxDBConnector("http://x", "token", "org")
 
 
-@pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Test doesn't work in Github Actions.")
-def test_database_connection(database_connection):
-    # TestBucket data range is october 2024
-    query_result = database_connection.query('''from(bucket: "test-data")
-      |> range(start: -10m)''')
-    assert isinstance(query_result, list)
+def test_query_dataframe():
+    df = pd.DataFrame({
+        "result": ["_result"], "host": ["h"], "topic": ["t"], "table": [0],
+        "_start": [pd.Timestamp("2025-01-01")], "_stop": [pd.Timestamp("2025-01-02")],
+        "_measurement": ["m"], "_time": [pd.Timestamp("2025-08-30T00:00:00Z")],
+        "_field": ["value"], "_value": [1.2],
+    })
+
+    query_api_mock = MagicMock()
+    query_api_mock.query_data_frame.return_value = df
+
+    with patch("ual.influx.Influx_db_connector.InfluxDBClient.query_api",
+               return_value=query_api_mock) as mock_query_api:
+        connector = InfluxDBConnector("http://x", "token", "org")
+        out = connector.query_dataframe('from(bucket:"x") |> range(start:-1h)')
+
+    assert out.index.name == "_time"
+    for col in ["result", "host", "topic", "table", "_start", "_stop", "_measurement", "_time"]:
+        assert col not in out.columns
+    assert "_value" in out.columns
+    mock_query_api.assert_called_once()
 
 
-@pytest.mark.skipif(IN_GITHUB_ACTIONS, reason="Test doesn't work in Github Actions.")
-def test_get_complete_query_as_dataframe(database_connection):
-    query = InfluxQueryBuilder() \
-        .set_bucket(InfluxBuckets.UAL_MINUTE_CALIBRATION_BUCKET.value) \
-        .set_range("2024-10-22T00:00:00Z", "2024-10-22T23:00:00Z") \
-        .set_topic("ual-1") \
-        .set_fields(["CO", "NO"]) \
-        .build()
+def test_query_empty_dataframe():
+    df = pd.DataFrame()
+    query_api_mock = MagicMock()
+    query_api_mock.query_data_frame.return_value = df
 
-    query_result = database_connection.query_dataframe(query)
-    print(query_result)  # TODO: extend testing
+    with patch("ual.influx.Influx_db_connector.InfluxDBClient.query_api",
+               return_value=query_api_mock) as mock_query_api:
+        connector = InfluxDBConnector("http://x", "token", "org")
+        out = connector.query_dataframe('from(bucket:"x") |> range(start:-1h)')
+
+    assert out.empty
+
+
+def test_query_dataframe_connection_error():
+    df = pd.DataFrame()
+    query_api_mock = MagicMock()
+    query_api_mock.query_data_frame.return_value = df
+
+    with patch("ual.influx.Influx_db_connector.InfluxDBClient.query_api",
+               return_value=query_api_mock,
+               side_effect=ConnectionError):
+        with pytest.raises(ConnectionError):
+            connector = InfluxDBConnector("http://x", "token", "org")
+            connector.query_dataframe('from(bucket:"x") |> range(start:-1h)')
