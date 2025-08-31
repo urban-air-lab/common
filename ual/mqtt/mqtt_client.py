@@ -29,3 +29,4 @@ class MQTTClient:
             self.logger.info(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Published to {topic}: {payload}")
         except ConnectionError as e:
             self.logger.error(f"Failed to publish to topic {topic}", exc_info=True)
+            raise

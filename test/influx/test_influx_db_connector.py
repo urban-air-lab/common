@@ -1,8 +1,6 @@
 import pandas as pd
 from unittest.mock import MagicMock, patch
-
 import pytest
-
 from ual.influx.Influx_db_connector import InfluxDBConnector
 
 
@@ -39,7 +37,7 @@ def test_query_empty_dataframe():
     query_api_mock.query_data_frame.return_value = df
 
     with patch("ual.influx.Influx_db_connector.InfluxDBClient.query_api",
-               return_value=query_api_mock) as mock_query_api:
+               return_value=query_api_mock):
         connector = InfluxDBConnector("http://x", "token", "org")
         out = connector.query_dataframe('from(bucket:"x") |> range(start:-1h)')
 
@@ -51,9 +49,9 @@ def test_query_dataframe_connection_error():
     query_api_mock = MagicMock()
     query_api_mock.query_data_frame.return_value = df
 
-    with patch("ual.influx.Influx_db_connector.InfluxDBClient.query_api",
-               return_value=query_api_mock,
-               side_effect=ConnectionError):
-        with pytest.raises(ConnectionError):
-            connector = InfluxDBConnector("http://x", "token", "org")
-            connector.query_dataframe('from(bucket:"x") |> range(start:-1h)')
+    with (patch("ual.influx.Influx_db_connector.InfluxDBClient.query_api",
+                return_value=query_api_mock,
+                side_effect=ConnectionError),
+          pytest.raises(ConnectionError)):
+        connector = InfluxDBConnector("http://x", "token", "org")
+        connector.query_dataframe('from(bucket:"x") |> range(start:-1h)')

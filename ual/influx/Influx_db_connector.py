@@ -38,6 +38,7 @@ class InfluxDBConnector:
             return query_result
         except ConnectionError as e:
             self.logger.error("Exception occurred for Influx request", exc_info=True)
+            raise
 
 
 
