@@ -1,9 +1,8 @@
 import json
-import os
 import time
-import logging
 import pandas as pd
 import paho.mqtt.publish as publish
+from ual.logging import get_logger
 
 
 class MQTTClient:
@@ -11,6 +10,8 @@ class MQTTClient:
         self.server: str = server
         self.port: int = port
         self.auth: dict = {'username': username, 'password': password}
+
+        self.logger = get_logger()
 
     def publish_dataframe(self, data: pd.DataFrame, topic: str, qos: int = 2) -> None:
         try:
@@ -25,6 +26,6 @@ class MQTTClient:
                 auth=self.auth,
                 qos=qos
             )
-            logging.info(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Published to {topic}: {payload}")
-        except Exception as e:
-            logging.error(f"Failed to publish to topic {topic}: {e}")
+            self.logger.info(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Published to {topic}: {payload}")
+        except ConnectionError as e:
+            self.logger.error(f"Failed to publish to topic {topic}", exc_info=True)
