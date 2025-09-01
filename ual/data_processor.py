@@ -42,18 +42,17 @@ class DataProcessor:
             self.inputs, self.targets = align_dataframes_by_time(self.inputs, self.targets)
         return self
 
-    def calculate_w_a_difference(self):
-        gases = ["NO", "NO2", "O3"]
+    def calculate_w_a_difference(self, gases):
         self.inputs = calculate_w_a_difference(self.inputs, gases)
         return self
 
     def get_inputs(self):
         return self.inputs
 
-    def get_target(self, target):
+    def get_targets(self):
         if self.targets is None:
             raise ValueError("No targets were provided to DataProcessor.")
-        return self.targets[target]
+        return self.targets
 
 
 def calculate_w_a_difference(dataframe: pd.DataFrame, gases: list) -> pd.DataFrame:

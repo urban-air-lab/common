@@ -1,6 +1,56 @@
+from datetime import datetime
+
+import numpy as np
 import pandas as pd
 import pytest
-from ual.data_processor import align_dataframes_by_time, calculate_w_a_difference
+from ual.data_processor import align_dataframes_by_time, calculate_w_a_difference, DataProcessor
+
+
+@pytest.fixture
+def sample_inputs():
+    dates = pd.date_range(start=datetime.now(), periods=10, freq="min")
+    return pd.DataFrame({
+        "RAW_ADC_NO_W": np.random.rand(10),
+        "RAW_ADC_NO_A": np.random.rand(10),
+        "RAW_ADC_NO2_W": np.random.rand(10),
+        "RAW_ADC_NO2_A": np.random.rand(10),
+        "RAW_ADC_O3_W": np.random.rand(10),
+        "RAW_ADC_O3_A": np.random.rand(10),
+    }, index=dates)
+
+
+@pytest.fixture
+def sample_targets():
+    dates = pd.date_range(start=datetime.now(), periods=10, freq="min")
+    return pd.DataFrame({
+        "NO2": np.random.rand(10)
+    }, index=dates)
+
+
+def test_processor_initialization_without_targets(sample_inputs, sample_targets):
+    processor = DataProcessor(inputs=sample_inputs, targets=sample_targets)
+    assert isinstance(processor.get_inputs(), pd.DataFrame)
+    assert len(processor.get_inputs()) == 10
+    assert isinstance(processor.get_targets(), pd.DataFrame)
+    assert len(processor.get_targets()) == 10
+
+
+def test_to_hourly_without_targets(sample_inputs, sample_targets):
+    processor = DataProcessor(inputs=sample_inputs, targets=sample_targets)
+    processed = processor.to_hourly()
+    assert isinstance(processed.get_inputs(), pd.DataFrame)
+    assert len(processor.get_inputs()) == 1
+    assert isinstance(processor.get_targets(), pd.DataFrame)
+    assert len(processor.get_targets()) == 1
+
+
+def test_remove_nan_without_targets(sample_inputs, sample_targets):
+    sample_inputs.iloc[0, 0] = np.nan
+    sample_targets.iloc[0, 0] = np.nan
+    processor = DataProcessor(inputs=sample_inputs, targets=sample_targets)
+    processed = processor.remove_nan()
+    assert not processed.get_inputs().isnull().values.any()
+    assert not processed.get_targets().isnull().values.any()
 
 
 def test_no_gases_list_raises_value_error():
