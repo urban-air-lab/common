@@ -1,5 +1,7 @@
 from enum import Enum
 
+from ual.influx.influx_buckets import InfluxBuckets
+
 
 class LUBWSensors(Enum):
     """
@@ -17,3 +19,15 @@ class UALSensors(Enum):
     UAL_1 = "ual-1"
     UAL_2 = "ual-2"
     UAL_3 = "ual-3"
+
+
+class SensorSource:
+    def __init__(self, bucket: InfluxBuckets, sensor: UALSensors | LUBWSensors):
+        self.bucket: InfluxBuckets = bucket
+        self.sensor: UALSensors | LUBWSensors = sensor
+
+    def get_bucket(self) -> str:
+        return self.bucket.value
+
+    def get_sensor(self) -> str:
+        return self.sensor.value
