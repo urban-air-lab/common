@@ -1,7 +1,10 @@
-import logging
 import yaml
 import inspect
 from pathlib import Path
+
+from ual.logging import get_logger
+
+logging = get_logger()
 
 
 def get_config(file: str) -> dict:
@@ -11,10 +14,13 @@ def get_config(file: str) -> dict:
             return yaml.safe_load(file)
     except FileNotFoundError:
         logging.error(f"No config found in directory")
+        raise
     except IOError:
         logging.error(f"IOError: An I/O error occurred")
+        raise
     except Exception as e:
         logging.error(f"An unexpected error occurred: {e}")
+        raise
 
 
 def _get_caller_directory(stack_position: int) -> Path:
