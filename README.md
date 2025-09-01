@@ -2,6 +2,7 @@
 repository that contains common methods and classes used in the UrbanAirLab project. 
     - InfluxDB client
     - MQTT client
+    - logger
     - data processors
     - config handler
 
