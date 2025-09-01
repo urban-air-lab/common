@@ -15,7 +15,7 @@ To install the dependencies run
 
 ````pipenv install````
 
-To connect to UrbanAirLabs InfluxDB or Mosquitto (MQTT Broker) the clients need a .env file containing the nessesaary 
+To connect to UrbanAirLabs InfluxDB or Mosquitto (MQTT Broker) the clients need a .env file containing the necessary 
 credentials and route information e.g. domain, port, etc. 
 
 ## Run Tests
