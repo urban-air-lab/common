@@ -16,3 +16,8 @@ To install the dependencies run
 
 To connect to UrbanAirLabs InfluxDB or Mosquitto (MQTT Broker) the clients need a .env file containing the nessesaary 
 credentials and route information e.g. domain, port, etc. 
+
+## Run Tests
+Unittest are written in pytest. To run all unittest of the project use:
+
+````pipenv run pytest````
