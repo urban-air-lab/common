@@ -2,7 +2,7 @@ import logging
 import sys
 
 
-def get_logger(name: str = None, level: str = logging.INFO):
+def get_logger(name: str = None, level: int = logging.INFO):
     logger = logging.getLogger(name)
 
     if not logger.handlers:

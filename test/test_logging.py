@@ -22,7 +22,7 @@ def test_configures_stdout_streamhandler_and_formatter(monkeypatch):
     monkeypatch.setattr(sys, "stdout", fake_stdout)
 
     name = "tests.get_logger.stdout_and_formatter"
-    logger = get_logger(name)
+    logger = get_logger(name, logging.DEBUG)
     try:
         assert len(logger.handlers) == 1
         handler = logger.handlers[0]
