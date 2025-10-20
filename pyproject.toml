@@ -1,7 +1,3 @@
-[build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "ual"
 version = "0.1.0"
@@ -10,19 +6,14 @@ readme = "README.md"
 authors = [
   { name = "UrbanAirLab", email = "Marc.Golder@hs-heilbronn.de" },
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
-  "numpy",
-  "pandas",
-  "influxdb-client",
-  "pandas",
-  "paho-mqtt",
-  "pytest",
-  "pyyaml",
-  "scipy",
-  "dotenv",
-  "flake8",
+    "dotenv>=0.9.9",
+    "influxdb-client>=1.49.0",
+    "numpy>=2.2.6",
+    "paho-mqtt>=2.1.0",
+    "pandas>=2.3.3",
+    "pytest>=8.4.2",
+    "pyyaml>=6.0.3",
+    "scipy>=1.15.3",
 ]
-
-[project.urls]
-Homepage = "https://github.com/urban-air-lab/common"
