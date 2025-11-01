@@ -1,0 +1,7 @@
+from enum import Enum
+
+
+class DWDStations(Enum):
+    OBERSULM_WILLENSBACH = 3734
+    HEILBRONN_KLINGENBERG = 2096
+    HEILBRONN_NECKAR = 15547
