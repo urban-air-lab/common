@@ -7,18 +7,23 @@ repository that contains common methods and classes used in the UrbanAirLab proj
     - config handler
 
 ## Setup
-The projects dependencies are managed with pipenv. To set up the project its needed to install pipenv via: 
-
-````pip3 install pipenv````
+The projects dependencies are managed with uv. To install and get more information about uv, follow this documentation:
+```
+https://docs.astral.sh/uv/getting-started/installation/
+```
 
 To install the dependencies run
 
-````pipenv install````
+```
+uv sync --locked
+```
 
 To connect to UrbanAirLabs InfluxDB or Mosquitto (MQTT Broker) the clients need a .env file containing the necessary 
-credentials and route information e.g. domain, port, etc. 
+credentials and route information e.g. domain, port, etc. You can get this information from you Supervisor. 
 
 ## Run Tests
-Unittest are written in pytest. To run all unittest of the project use:
+Tests are base on Pytest - run all tests via command line:
 
-````pipenv run pytest````
+```
+uv run pytest
+```
