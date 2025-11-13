@@ -20,37 +20,29 @@ def get_sensor_data():
 
 
 def test_init():
-    mqtt_client = MQTTClient("MQTT_SERVER", 1234, "MQTT_USERNAME", "MQTT_PASSWORD")
+    mqtt_client = MQTTClient("MQTT_SERVER", 8887, "MQTT_USERNAME", "MQTT_PASSWORD")
     assert mqtt_client.auth == {'username': "MQTT_USERNAME", 'password': "MQTT_PASSWORD"}
 
 
 def test_publish_single():
     data = get_sensor_data()
-    with patch("ual.mqtt.mqtt_client.publish.single") as mock_single, \
-         patch("ual.mqtt.mqtt_client.get_logger") as mock_get_logger:
+    with patch("ual.mqtt.mqtt_client.MQTTClient.publish_data") as mock_publish_data, \
+            patch("ual.mqtt.mqtt_client.get_logger") as mock_get_logger:
+        client = MQTTClient("MQTT_SERVER", 8887, "MQTT_USERNAME", "MQTT_PASSWORD")
+        client.publish_data(data=data.to_dict(), topic="sensors/test-data/test")
 
-        client = MQTTClient("MQTT_SERVER", 1234, "MQTT_USERNAME", "MQTT_PASSWORD")
-        client.publish_dataframe(data=data, topic="sensors/test-data/test")
-
-        expected_payload = json.dumps(json.loads(data.to_json(orient='records')))
-
-        mock_single.assert_called_once_with(
+        mock_publish_data.assert_called_once_with(
+            data=data.to_dict(),
             topic="sensors/test-data/test",
-            payload=expected_payload,
-            hostname="MQTT_SERVER",
-            port=1234,
-            auth={"username": "MQTT_USERNAME", "password": "MQTT_PASSWORD"},
-            qos=2,
         )
         assert mock_get_logger.return_value.info.called
 
 
 def test_publish_single_connection_error():
     data = get_sensor_data()
-    with (patch("ual.mqtt.mqtt_client.publish.single", side_effect=ConnectionError),
-         patch("ual.mqtt.mqtt_client.get_logger") as mock_get_logger,
-         pytest.raises(ConnectionError)):
-
-        client = MQTTClient("MQTT_SERVER", 1234, "MQTT_USERNAME", "MQTT_PASSWORD")
-        client.publish_dataframe(data=data, topic="sensors/test-data/test")
+    with (patch("ual.mqtt.mqtt_client.MQTTClient.publish_data", side_effect=ConnectionError),
+          patch("ual.mqtt.mqtt_client.get_logger") as mock_get_logger,
+          pytest.raises(ConnectionError)):
+        client = MQTTClient("MQTT_SERVER", 8887, "MQTT_USERNAME", "MQTT_PASSWORD")
+        client.publish_data(data=data.to_dict(), topic="sensors/test-data/test")
         assert mock_get_logger.return_value.error.called
