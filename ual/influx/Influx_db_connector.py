@@ -8,6 +8,7 @@ class InfluxDBConnector:
     def __init__(self, url: str, token: str, organization: str) -> None:
         """
         Initializes the InfluxDBConnector class.
+        Since it´s a wrapper for InfluxDBClient is named InfluxDBConnector
 
         :param url: InfluxDB server URL
         :param token: InfluxDB authentication token
@@ -23,7 +24,7 @@ class InfluxDBConnector:
 
         self.logger = get_logger()
 
-    def query(self, query: str) -> TableList:
+    def query(self, query: str) -> TableList | None:
         try:
             return self.query_api.query(query)
         except ConnectionError as e:
