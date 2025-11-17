@@ -55,7 +55,7 @@ class MQTTClient:
         json_data = json.dumps(data, indent=4)
         try:
             self.client.publish(topic, json_data, qos=2)
-            self.logger.info("mqtt publish: ", json_data)
+            self.logger.info("mqtt publish: ", data)
         except Exception as e:
             self.logger.error("could not push to mqtt: ", e)
 
