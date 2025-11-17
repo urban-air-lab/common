@@ -19,7 +19,7 @@ class MQTTClient:
         self.logger = get_logger()
 
         try:
-            self.logger.info("Authenticating with user:", self.auth["username"], "on MQTT connection")
+            self.logger.info("Authenticating with user: " + self.auth["username"] + "on MQTT connection")
             self.client.username_pw_set(self.auth["username"], self.auth["password"])
         except AttributeError:
             self.logger.error("Using no authentication on MQTT connection")
