@@ -29,6 +29,12 @@ class SensorSource:
         self.bucket: InfluxBuckets = bucket
         self.sensor: UALSensors | LUBWSensors = sensor
 
+    @classmethod
+    def from_strings(cls, bucket: str, sensor:str) -> "SensorSource":
+        bucket: InfluxBuckets = InfluxBuckets(bucket)
+        sensor: UALSensors = UALSensors(sensor)
+        return SensorSource(bucket, sensor)
+
     def get_bucket(self) -> str:
         return self.bucket.value
 
