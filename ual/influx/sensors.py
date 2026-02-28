@@ -3,16 +3,7 @@ from enum import Enum
 from ual.influx.influx_buckets import InfluxBuckets
 
 
-class LUBWSensors(Enum):
-    """
-    All current in use sensors from lubw
-    debw is english abbreviation for lubw
-    """
-    DEBW015 = "DEBW015"
-    DEBW152 = "DEBW152"
-
-
-class UALSensors(Enum):
+class Sensors(Enum):
     """
     All current in use custom sensors from UrbanAirLab project
     """
@@ -22,17 +13,19 @@ class UALSensors(Enum):
     UAL_4 = "ual-4"
     UAL_5 = "ual-5"
     UAL_6 = "ual-6"
+    DEBW015 = "DEBW015"
+    DEBW152 = "DEBW152"
 
 
 class SensorSource:
-    def __init__(self, bucket: InfluxBuckets, sensor: UALSensors | LUBWSensors):
+    def __init__(self, bucket: InfluxBuckets, sensor: Sensors ):
         self.bucket: InfluxBuckets = bucket
-        self.sensor: UALSensors | LUBWSensors = sensor
+        self.sensor: Sensors = sensor
 
     @classmethod
     def from_strings(cls, bucket: str, sensor:str) -> "SensorSource":
         bucket: InfluxBuckets = InfluxBuckets(bucket)
-        sensor: UALSensors = UALSensors(sensor)
+        sensor: Sensors = Sensors(sensor)
         return SensorSource(bucket, sensor)
 
     def get_bucket(self) -> str:
