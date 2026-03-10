@@ -79,6 +79,8 @@ class InfluxQueryBuilder:
             return "sensors/calibration/" + sensor
         elif InfluxBuckets.UAL_MINUTE_MEASUREMENT_BUCKET.value in self._bucket:
             return "sensors/measurement/" + sensor
+        elif InfluxBuckets.UAL_HOUR_INFERENCE_BUCKET.value in self._bucket:
+            return "sensors/ual-hour-inference/" + sensor
         else:
             raise ValueError("No correct sensor name found, please check")
 

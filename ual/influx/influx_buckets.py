@@ -7,6 +7,7 @@ class InfluxBuckets(Enum):
     """
     UAL_MINUTE_CALIBRATION_BUCKET = "ual-minute-calibration"
     UAL_MINUTE_MEASUREMENT_BUCKET = "ual-minute-measurement"
+    UAL_HOUR_INFERENCE_BUCKET = "ual-hour-inference"
     LUBW_HOUR_BUCKET = "lubw-hour"
     LUBW_MINUTE_BUCKET = "lubw-minute"
     TEST_BUCKET = "test-data"
