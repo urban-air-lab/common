@@ -29,7 +29,8 @@ class MQTTClient:
             self.client.tls_set()
 
         try:
-            self.client.connect(self.server, self.port)
+            self.client.connect(self.server, self.port, keepalive=60)
+            self.client.reconnect_delay_set(min_delay=1, max_delay=60)
         except Exception as e:
             self.logger.error(f"Can't connect to MQTT Broker:{self.server} at port:{self.port}, dump: {e}")
 
@@ -60,4 +61,5 @@ class MQTTClient:
             self.logger.error("could not push to mqtt: ", e)
 
     def stop(self) -> None:
+        self.client.disconnect()
         self.client.loop_stop()
