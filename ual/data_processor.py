@@ -2,9 +2,16 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 
+from ual.logging import get_logger
+
+log = get_logger()
 
 class DataProcessor:
     def __init__(self, inputs: pd.DataFrame, targets: pd.DataFrame = None):
+        if inputs.empty:
+            log.info("No data in inputs")
+        if targets.empty:
+            log.info("No data in targets")
         if not isinstance(inputs.index, pd.DatetimeIndex):
             raise ValueError("The inputs index must be a DatetimeIndex.")
         if targets is not None and not isinstance(targets.index, pd.DatetimeIndex):
