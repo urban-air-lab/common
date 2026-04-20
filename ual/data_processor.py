@@ -8,9 +8,9 @@ log = get_logger()
 
 class DataProcessor:
     def __init__(self, inputs: pd.DataFrame, targets: pd.DataFrame = None):
-        if inputs.empty:
+        if inputs is not None and inputs.empty:
             log.info("No data in inputs")
-        if targets.empty:
+        if targets is not None and targets.empty:
             log.info("No data in targets")
         if not isinstance(inputs.index, pd.DatetimeIndex):
             raise ValueError("The inputs index must be a DatetimeIndex.")
