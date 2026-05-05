@@ -27,3 +27,30 @@ Tests are base on Pytest - run all tests via command line:
 ```
 uv run pytest
 ```
+
+## Use Ruff for linting
+fix linting errors
+```
+ruff check --fix .
+```
+
+format code
+```
+ruff format . 
+```
+
+## Use MyPy for static type checking: 
+
+```
+mypy .
+```
+
+## Use isort for sort imports
+```
+isort .
+```
+
+## Use pip-audit for dependency vulnerabilities 
+```
+pip-audit
+```
