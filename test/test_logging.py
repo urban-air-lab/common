@@ -1,7 +1,6 @@
 import io
 import sys
 import logging
-import pytest
 from ual.logging import get_logger
 
 
@@ -32,7 +31,6 @@ def test_configures_stdout_streamhandler_and_formatter(monkeypatch):
         assert logger.level == logging.DEBUG
         assert logger.propagate is False
 
-        fmt = "%(asctime)s %(levelname)s %(message)s"
         assert isinstance(handler.formatter, logging.Formatter)
         logger.info("hello")
         out = fake_stdout.getvalue()

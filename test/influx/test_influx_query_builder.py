@@ -11,19 +11,19 @@ def test_builder_init():
 
 def test_builder_without_bucket():
     with pytest.raises(ValueError, match="bucket must be set!"):
-        query = InfluxQueryBuilder().build()
+        InfluxQueryBuilder().build()
 
 
 def test_builder_bucket():
     with pytest.raises(ValueError, match="time range must be set!"):
-        query = InfluxQueryBuilder() \
+        InfluxQueryBuilder() \
             .set_bucket(InfluxBuckets.TEST_BUCKET.value) \
             .build()
 
 
 def test_builder_bucket_range():
     with pytest.raises(ValueError, match="topic must be set!"):
-        query = InfluxQueryBuilder() \
+        InfluxQueryBuilder() \
             .set_bucket(InfluxBuckets.TEST_BUCKET.value) \
             .set_range("2024-10-22T00:00:00Z", "2024-10-22T23:00:00Z") \
             .build()
@@ -31,7 +31,7 @@ def test_builder_bucket_range():
 
 def test_builder_bucket_range_invalid_dates():
     with pytest.raises(ValueError, match="No valid date format - must be yyyy-mm-ddTHH:MM:SSZ"):
-        query = InfluxQueryBuilder() \
+        InfluxQueryBuilder() \
             .set_bucket(InfluxBuckets.TEST_BUCKET.value) \
             .set_range("2024-10-22 00:00:00", "2024-10-22 23:00:00") \
             .build()
@@ -39,7 +39,7 @@ def test_builder_bucket_range_invalid_dates():
 
 def test_builder_bucket_range_invalid_start_date():
     with pytest.raises(ValueError, match="No valid date format - must be yyyy-mm-ddTHH:MM:SSZ"):
-        query = InfluxQueryBuilder() \
+        InfluxQueryBuilder() \
             .set_bucket(InfluxBuckets.TEST_BUCKET.value) \
             .set_range("2024-10-22 00:00:00", "2024-10-22T23:00:00Z") \
             .build()
@@ -47,7 +47,7 @@ def test_builder_bucket_range_invalid_start_date():
 
 def test_builder_bucket_range_end_date():
     with pytest.raises(ValueError, match="No valid date format - must be yyyy-mm-ddTHH:MM:SSZ"):
-        query = InfluxQueryBuilder() \
+        InfluxQueryBuilder() \
             .set_bucket(InfluxBuckets.TEST_BUCKET.value) \
             .set_range("2024-10-22T00:00:00Z", "2024-10-22 23:00:00") \
             .build()

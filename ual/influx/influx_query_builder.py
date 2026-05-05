@@ -38,7 +38,7 @@ class InfluxQueryBuilder:
         return self
 
     def set_range_to_start_0(self):
-        self._range = f'''|> range(start:0)'''
+        self._range = '''|> range(start:0)'''
         return self
 
     def set_topic(self, sensor: str):

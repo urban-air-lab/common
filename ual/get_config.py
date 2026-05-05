@@ -13,10 +13,10 @@ def get_config(file: str) -> dict:
         with open(os_independent_path, 'r') as file:
             return yaml.safe_load(file)
     except FileNotFoundError:
-        logging.error(f"No config found in directory")
+        logging.error("No config found in directory")
         raise
     except IOError:
-        logging.error(f"IOError: An I/O error occurred")
+        logging.error("IOError: An I/O error occurred")
         raise
     except Exception as e:
         logging.error(f"An unexpected error occurred: {e}")

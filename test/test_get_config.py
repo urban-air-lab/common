@@ -14,14 +14,14 @@ def test_get_config():
 
 def test_get_config_FileNotFoundError():
     with pytest.raises(FileNotFoundError):
-        config = get_config("ressources/no_file.yaml")
+        get_config("ressources/no_file.yaml")
 
 
 def test_get_config_IOError():
     with pytest.raises(IOError):
-        config = get_config("ressources/no_file.yaml")
+        get_config("ressources/no_file.yaml")
 
 
 def test_get_config_Exception():
     with pytest.raises(Exception):
-        config = get_config(1)
+        get_config(1)

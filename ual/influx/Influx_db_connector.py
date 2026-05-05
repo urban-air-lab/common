@@ -27,7 +27,7 @@ class InfluxDBConnector:
     def query(self, query: str) -> TableList | None:
         try:
             return self.query_api.query(query)
-        except ConnectionError as e:
+        except ConnectionError:
             self.logger.error("Exception occurred for Influx request", exc_info=True)
 
     def query_dataframe(self, query: str) -> pd.DataFrame:
@@ -37,7 +37,7 @@ class InfluxDBConnector:
                 query_result.drop(["result", "host", "topic", "table", "_start", "_stop", "_measurement"], inplace=True, axis=1)
                 query_result.set_index("_time", inplace=True, drop=True)
             return query_result
-        except ConnectionError as e:
+        except ConnectionError:
             self.logger.error("Exception occurred for Influx request", exc_info=True)
             raise
 
