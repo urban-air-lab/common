@@ -21,6 +21,13 @@ uv sync --locked
 To connect to UrbanAirLabs InfluxDB or Mosquitto (MQTT Broker) the clients need a .env file containing the necessary 
 credentials and route information e.g. domain, port, etc. You can get this information from you Supervisor. 
 
+## Bump up version number
+After changing the version in pyproject.toml you need to run
+
+```
+uv lock
+```
+
 ## Run Tests
 Tests are base on Pytest - run all tests via command line:
 
