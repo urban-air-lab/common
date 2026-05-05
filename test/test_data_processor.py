@@ -29,7 +29,7 @@ def sample_targets():
     }, index=dates)
 
 
-def test_processor_initialization_without_targets(sample_inputs, sample_targets):
+def test_processor_initialization(sample_inputs, sample_targets):
     processor = DataProcessor(inputs=sample_inputs, targets=sample_targets)
     assert isinstance(processor.get_inputs(), pd.DataFrame)
     assert len(processor.get_inputs()) == 10
@@ -37,16 +37,16 @@ def test_processor_initialization_without_targets(sample_inputs, sample_targets)
     assert len(processor.get_targets()) == 10
 
 
-def test_to_hourly_without_targets(sample_inputs, sample_targets):
+def test_to_hourly(sample_inputs, sample_targets):
     processor = DataProcessor(inputs=sample_inputs, targets=sample_targets)
     processed = processor.to_hourly()
     assert isinstance(processed.get_inputs(), pd.DataFrame)
-    assert len(processor.get_inputs()) == 1
+    assert len(processor.get_inputs()) == 2
     assert isinstance(processor.get_targets(), pd.DataFrame)
-    assert len(processor.get_targets()) == 1
+    assert len(processor.get_targets()) == 2
 
 
-def test_remove_nan_without_targets(sample_inputs, sample_targets):
+def test_remove_nan(sample_inputs, sample_targets):
     sample_inputs.iloc[0, 0] = np.nan
     sample_targets.iloc[0, 0] = np.nan
     processor = DataProcessor(inputs=sample_inputs, targets=sample_targets)
