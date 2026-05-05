@@ -1,6 +1,7 @@
 import io
-import sys
 import logging
+import sys
+
 from ual.logging import get_logger
 
 

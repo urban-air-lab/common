@@ -1,7 +1,8 @@
-from unittest.mock import patch
-import pandas as pd
 import random
 import time
+from unittest.mock import patch
+
+import pandas as pd
 import pytest
 from dotenv import load_dotenv
 

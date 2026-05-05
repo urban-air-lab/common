@@ -1,6 +1,8 @@
-import pandas as pd
 from unittest.mock import MagicMock, patch
+
+import pandas as pd
 import pytest
+
 from ual.influx.Influx_db_connector import InfluxDBConnector
 
 

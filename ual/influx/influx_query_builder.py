@@ -1,5 +1,5 @@
-from datetime import datetime, timedelta
 import re
+from datetime import datetime, timedelta
 
 from ual.influx.influx_buckets import InfluxBuckets
 

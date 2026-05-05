@@ -3,7 +3,9 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 import pytest
-from ual.data_processor import align_dataframes_by_time, calculate_w_a_difference, DataProcessor
+
+from ual.data_processor import (DataProcessor, align_dataframes_by_time,
+                                calculate_w_a_difference)
 
 
 @pytest.fixture

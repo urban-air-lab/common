@@ -1,6 +1,7 @@
-from influxdb_client import InfluxDBClient, QueryApi
 import pandas as pd
+from influxdb_client import InfluxDBClient, QueryApi
 from influxdb_client.client.flux_table import TableList
+
 from ual.logging import get_logger
 
 

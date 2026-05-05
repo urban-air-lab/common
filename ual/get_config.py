@@ -1,6 +1,7 @@
-import yaml
 import inspect
 from pathlib import Path
+
+import yaml
 
 from ual.logging import get_logger
 

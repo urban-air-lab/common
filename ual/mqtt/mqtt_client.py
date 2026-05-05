@@ -1,6 +1,8 @@
 import json
-from typing import Dict, Any
+from typing import Any, Dict
+
 import paho.mqtt.client as mqtt
+
 from ual.logging import get_logger
 
 

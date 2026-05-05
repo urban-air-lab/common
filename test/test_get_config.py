@@ -1,4 +1,5 @@
 import pytest
+
 from ual.get_config import _get_caller_directory, get_config
 
 
