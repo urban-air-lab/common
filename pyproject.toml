@@ -10,18 +10,18 @@ readme = "README.md"
 authors = [
   { name = "UrbanAirLab", email = "Marc.Golder@hs-heilbronn.de" },
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "dotenv>=0.9.9",
     "influxdb-client>=1.50.0",
     "isort>=8.0.1",
     "mypy>=1.20.2",
-    "numpy>=2.2.6",
+    "numpy>=2.4.4",
     "paho-mqtt>=2.1.0",
-    "pandas>=2.3.3",
+    "pandas>=3.0.2",
     "pip-audit>=2.10.0",
     "pytest>=9.0.3",
     "pyyaml>=6.0.3",
     "ruff>=0.15.12",
-    "scipy>=1.15.3",
+    "scipy>=1.17.1",
 ]
