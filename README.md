@@ -61,13 +61,3 @@ uv run isort .
 ```
 uv run pip-audit
 ```
-
-## Check for new dependencies
-```
-uv tree --outdated --depth 1
-```
-
-after updating dependencies run
-```
-uv sync
-```
