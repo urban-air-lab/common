@@ -1079,7 +1079,7 @@ requires-dist = [
     { name = "mypy", specifier = ">=1.20.2" },
     { name = "numpy", specifier = ">=2.4.4" },
     { name = "paho-mqtt", specifier = ">=2.1.0" },
-    { name = "pandas", specifier = ">=3.0.2" },
+    { name = "pandas", specifier = ">=2.3.3" },
     { name = "pip-audit", specifier = ">=2.10.0" },
     { name = "pytest", specifier = ">=9.0.3" },
     { name = "pyyaml", specifier = ">=6.0.3" },
