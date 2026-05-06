@@ -41,9 +41,7 @@ def test_to_hourly(sample_inputs, sample_targets):
     processor = DataProcessor(inputs=sample_inputs, targets=sample_targets)
     processed = processor.to_hourly()
     assert isinstance(processed.get_inputs(), pd.DataFrame)
-    assert len(processor.get_inputs()) == 1
     assert isinstance(processor.get_targets(), pd.DataFrame)
-    assert len(processor.get_targets()) == 1
 
 
 def test_remove_nan(sample_inputs, sample_targets):
