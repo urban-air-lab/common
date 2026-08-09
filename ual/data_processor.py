@@ -72,7 +72,6 @@ def calculate_w_a_difference(dataframe: pd.DataFrame, gases: list) -> pd.DataFra
         a_column = f"RAW_ADC_{gas}_A"
         if w_column in dataframe.columns and a_column in dataframe.columns:
             dataframe[f"{gas}_W_A"] = dataframe[w_column] - dataframe[a_column]
-            dataframe.drop([w_column, a_column], inplace=True, axis=1)
         else:
             print(f"Warning: Columns for {gas} not found in the dataframe.")
     return dataframe
