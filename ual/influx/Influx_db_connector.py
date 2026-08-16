@@ -20,7 +20,7 @@ class InfluxDBConnector:
         self.organization: str = organization
         self.timeout: int = 60000
 
-        self.client: InfluxDBClient = InfluxDBClient(url=self.url, token=self.token, org=self.organization)
+        self.client: InfluxDBClient = InfluxDBClient(url=self.url, token=self.token, org=self.organization, timeout=self.timeout)
         self.query_api: QueryApi = self.client.query_api()
 
         self.logger = get_logger()
