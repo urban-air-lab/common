@@ -39,7 +39,7 @@ class DataProcessor:
         return self
 
     def remove_target_outliers(self, outlier_range=3):
-        z_scores = np.abs(stats.zscore(self.inputs, nan_policy='omit'))
+        z_scores = np.abs(stats.zscore(self.targets, nan_policy='omit'))
         mask = (z_scores < outlier_range).all(axis=1)
         self.targets = self.targets[mask]
         return self
