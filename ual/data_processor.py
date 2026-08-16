@@ -32,10 +32,16 @@ class DataProcessor:
             self.targets = self.targets.resample("d").mean()
         return self
 
-    def remove_outliers(self, outlier_range=3):
+    def remove_input_outliers(self, outlier_range=3):
         z_scores = np.abs(stats.zscore(self.inputs, nan_policy='omit'))
         mask = (z_scores < outlier_range).all(axis=1)
         self.inputs = self.inputs[mask]
+        return self
+
+    def remove_target_outliers(self, outlier_range=3):
+        z_scores = np.abs(stats.zscore(self.inputs, nan_policy='omit'))
+        mask = (z_scores < outlier_range).all(axis=1)
+        self.targets = self.targets[mask]
         return self
 
     def remove_nan(self):
