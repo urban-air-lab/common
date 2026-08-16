@@ -81,8 +81,8 @@ def align_dataframes_by_time(df1: pd.DataFrame, df2: pd.DataFrame) -> (pd.DataFr
     df1.index = pd.to_datetime(df1.index)
     df2.index = pd.to_datetime(df2.index)
 
-    df1.index.floor("s")
-    df2.index.floor("s")
+    df1.index = df1.index.floor("s")
+    df2.index = df2.index.floor("s")
 
     common_times = df1.index.intersection(df2.index)
 
