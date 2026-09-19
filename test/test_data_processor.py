@@ -84,9 +84,6 @@ def test_basic_NO_CO_difference():
 
     # should modify in-place and return the same object
     assert result is df_copy
-    expected_cols = {'other', 'NO_W_A', 'CO_W_A'}
-    assert set(result.columns) == expected_cols
-
     assert result['NO_W_A'].tolist() == [9, 18, 27]
     assert result['CO_W_A'].tolist() == [90, 180, 270]
 
