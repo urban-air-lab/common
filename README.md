@@ -61,3 +61,8 @@ uv run isort .
 ```
 uv run pip-audit
 ```
+
+## Check for new dependency versions 
+``
+uv pip list --outdated
+``
