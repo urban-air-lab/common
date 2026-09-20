@@ -1,16 +1,20 @@
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
 import pytest
 
-from ual.data_processor import (DataProcessor, align_dataframes_by_time,
-                                calculate_w_a_difference)
+from ual.data_processor import (
+    DataProcessor,
+    align_dataframes_by_time,
+    calculate_w_a_difference,
+)
 
 
 @pytest.fixture
 def sample_inputs():
-    dates = pd.date_range(start=datetime.now(), periods=10, freq="min")
+    dates = pd.date_range(start=datetime.now(tz=ZoneInfo("Europe/Berlin")), periods=10, freq="min")
     return pd.DataFrame({
         "RAW_ADC_NO_W": np.random.rand(10),
         "RAW_ADC_NO_A": np.random.rand(10),
@@ -23,7 +27,7 @@ def sample_inputs():
 
 @pytest.fixture
 def sample_targets():
-    dates = pd.date_range(start=datetime.now(), periods=10, freq="min")
+    dates = pd.date_range(start=datetime.now(tz=ZoneInfo("Europe/Berlin")), periods=10, freq="min")
     return pd.DataFrame({
         "NO2": np.random.rand(10)
     }, index=dates)

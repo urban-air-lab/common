@@ -4,7 +4,7 @@ from scipy import stats
 
 from ual.logging import get_logger
 
-log = get_logger()
+log = get_logger("data processor")
 
 class DataProcessor:
     def __init__(self, inputs: pd.DataFrame, targets: pd.DataFrame = None):
@@ -13,9 +13,9 @@ class DataProcessor:
         if targets is not None and targets.empty:
             log.info("No data in targets")
         if not isinstance(inputs.index, pd.DatetimeIndex):
-            raise ValueError("The inputs index must be a DatetimeIndex.")
+            raise TypeError("The inputs index must be a DatetimeIndex.")
         if targets is not None and not isinstance(targets.index, pd.DatetimeIndex):
-            raise ValueError("The targets index must be a DatetimeIndex.")
+            raise TypeError("The targets index must be a DatetimeIndex.")
 
         self.inputs = inputs
         self.targets = targets

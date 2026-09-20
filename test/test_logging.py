@@ -9,10 +9,7 @@ def _cleanup_logger(logger: logging.Logger):
     """Remove handlers and reset state to avoid cross-test pollution."""
     for h in list(logger.handlers):
         logger.removeHandler(h)
-        try:
-            h.close()
-        except Exception:
-            pass
+        h.close()
     logger.setLevel(logging.NOTSET)
     logger.propagate = True
 

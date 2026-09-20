@@ -1,4 +1,5 @@
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
@@ -9,7 +10,7 @@ from ual.data_processor import DataProcessor
 
 @pytest.fixture
 def sample_inputs():
-    dates = pd.date_range(start=datetime.now(), periods=10, freq="min")
+    dates = pd.date_range(start=datetime.now(tz=ZoneInfo("Europe/Berlin")), periods=10, freq="min")
     return pd.DataFrame({
         "RAW_ADC_NO_W": np.random.rand(10),
         "RAW_ADC_NO_A": np.random.rand(10),

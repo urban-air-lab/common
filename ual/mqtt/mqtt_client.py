@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict
+from typing import Any
 
 import paho.mqtt.client as mqtt
 
@@ -18,7 +18,7 @@ class MQTTClient:
         self.client.on_disconnect = self._on_disconnect
         self.packet_counter = 0
 
-        self.logger = get_logger()
+        self.logger = get_logger("mqtt_client")
 
         try:
             self.logger.info(f'Authenticating with user: {self.auth["username"]} on MQTT connection')
@@ -33,7 +33,7 @@ class MQTTClient:
         try:
             self.client.connect(self.server, self.port, keepalive=60)
             self.client.reconnect_delay_set(min_delay=1, max_delay=60)
-        except Exception as e:
+        except (OSError, ValueError) as e:
             self.logger.error(f"Can't connect to MQTT Broker:{self.server} at port:{self.port}, dump: {e}")
 
         self.client.loop_start()  # Start MQTT handling in a new thread
@@ -53,14 +53,20 @@ class MQTTClient:
         print(f'Disconnected from MQTT Broker: {self.server} at port: {self.port}')
         self.mqtt_connected = False
 
-    def publish_data(self, data: Dict[str, Any], topic: str ) -> None:
+    def publish_data(self, data: dict[str, Any], topic: str ) -> None:
         data["packet_count"] = self._get_next_packet_count()
         json_data = json.dumps(data, indent=4)
         try:
-            self.client.publish(topic, json_data, qos=2)
-            self.logger.info(f'mqtt publish: topic: {topic}, data: {data}')
-        except Exception as e:
-            self.logger.error("could not push to mqtt: ", e)
+            info = self.client.publish(topic, json_data, qos=2)
+        except (ValueError, TypeError) as e:
+            self.logger.error(f"could not push to mqtt: topic: {topic}, dump: {e}")
+            return
+
+        if info.rc != mqtt.MQTT_ERR_SUCCESS:
+            self.logger.error(f"could not push to mqtt: topic: {topic}, rc: {mqtt.error_string(info.rc)}")
+            return
+
+        self.logger.info(f'mqtt publish: topic: {topic}, data: {data}')
 
     def stop(self) -> None:
         self.client.disconnect()

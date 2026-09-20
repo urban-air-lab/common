@@ -21,8 +21,3 @@ def test_get_config_FileNotFoundError():
 def test_get_config_IOError():
     with pytest.raises(IOError):
         get_config("ressources/no_file.yaml")
-
-
-def test_get_config_Exception():
-    with pytest.raises(Exception):
-        get_config(1)

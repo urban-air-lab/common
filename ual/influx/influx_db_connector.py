@@ -23,13 +23,13 @@ class InfluxDBConnector:
         self.client: InfluxDBClient = InfluxDBClient(url=self.url, token=self.token, org=self.organization, timeout=self.timeout)
         self.query_api: QueryApi = self.client.query_api()
 
-        self.logger = get_logger()
+        self.logger = get_logger("influx_db_connector")
 
     def query(self, query: str) -> TableList | None:
         try:
             return self.query_api.query(query)
         except ConnectionError:
-            self.logger.error("Exception occurred for Influx request", exc_info=True)
+            self.logger.exception("Exception occurred for Influx request")
 
     def query_dataframe(self, query: str) -> pd.DataFrame:
         try:
@@ -39,7 +39,7 @@ class InfluxDBConnector:
                 query_result.set_index("_time", inplace=True, drop=True)
             return query_result
         except ConnectionError:
-            self.logger.error("Exception occurred for Influx request", exc_info=True)
+            self.logger.exception("Exception occurred for Influx request")
             raise
 
 

@@ -1,5 +1,6 @@
 import re
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
 from ual.influx.influx_buckets import InfluxBuckets
 
@@ -86,11 +87,11 @@ class InfluxQueryBuilder:
 
     def _is_valid_iso8601_utc(self, date: str) -> bool:
         pattern = r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$"
-        if not re.match(pattern, date):
-            return False
-        return True
+        return re.match(pattern, date) is not None
 
     def _add_one_min(self, ts_str: str) -> str:
-        ts = datetime.strptime(ts_str, "%Y-%m-%dT%H:%M:%SZ")
+        ts = datetime.strptime(ts_str, "%Y-%m-%dT%H:%M:%SZ").replace(
+        tzinfo=ZoneInfo("Europe/Berlin")
+        )
         ts_plus_1min = ts + timedelta(minutes=1)
         return ts_plus_1min.strftime("%Y-%m-%dT%H:%M:%SZ")
