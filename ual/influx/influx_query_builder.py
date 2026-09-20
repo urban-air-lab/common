@@ -21,7 +21,7 @@ class InfluxQueryBuilder:
         self._range = None
         self._topic = None
         self._fields = None
-        self._pivot = '''|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")'''
+        self._pivot = """|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")"""
         self.query = None
 
     def set_bucket(self, bucket: str):
@@ -35,15 +35,17 @@ class InfluxQueryBuilder:
             raise ValueError("No valid date format - must be yyyy-mm-ddTHH:MM:SSZ")
         if inclusive:
             stop_date = self._add_one_min(stop_date)
-        self._range = f'''|> range(start: {start_date}, stop: {stop_date})'''
+        self._range = f"""|> range(start: {start_date}, stop: {stop_date})"""
         return self
 
     def set_range_to_start_0(self):
-        self._range = '''|> range(start:0)'''
+        self._range = """|> range(start:0)"""
         return self
 
     def set_topic(self, sensor: str):
-        self._topic = f'''|> filter(fn: (r) => r.topic == "{self._build_topic(sensor)}")'''
+        self._topic = (
+            f'''|> filter(fn: (r) => r.topic == "{self._build_topic(sensor)}")'''
+        )
         return self
 
     def set_fields(self, fields: list):
@@ -91,7 +93,7 @@ class InfluxQueryBuilder:
 
     def _add_one_min(self, ts_str: str) -> str:
         ts = datetime.strptime(ts_str, "%Y-%m-%dT%H:%M:%SZ").replace(
-        tzinfo=ZoneInfo("Europe/Berlin")
+            tzinfo=ZoneInfo("Europe/Berlin")
         )
         ts_plus_1min = ts + timedelta(minutes=1)
         return ts_plus_1min.strftime("%Y-%m-%dT%H:%M:%SZ")

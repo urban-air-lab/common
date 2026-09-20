@@ -10,15 +10,20 @@ from ual.data_processor import DataProcessor
 
 @pytest.fixture
 def sample_inputs():
-    dates = pd.date_range(start=datetime.now(tz=ZoneInfo("Europe/Berlin")), periods=10, freq="min")
-    return pd.DataFrame({
-        "RAW_ADC_NO_W": np.random.rand(10),
-        "RAW_ADC_NO_A": np.random.rand(10),
-        "RAW_ADC_NO2_W": np.random.rand(10),
-        "RAW_ADC_NO2_A": np.random.rand(10),
-        "RAW_ADC_O3_W": np.random.rand(10),
-        "RAW_ADC_O3_A": np.random.rand(10),
-    }, index=dates)
+    dates = pd.date_range(
+        start=datetime.now(tz=ZoneInfo("Europe/Berlin")), periods=10, freq="min"
+    )
+    return pd.DataFrame(
+        {
+            "RAW_ADC_NO_W": np.random.rand(10),
+            "RAW_ADC_NO_A": np.random.rand(10),
+            "RAW_ADC_NO2_W": np.random.rand(10),
+            "RAW_ADC_NO2_A": np.random.rand(10),
+            "RAW_ADC_O3_W": np.random.rand(10),
+            "RAW_ADC_O3_A": np.random.rand(10),
+        },
+        index=dates,
+    )
 
 
 def test_processor_initialization_without_targets(sample_inputs):

@@ -5,6 +5,7 @@ class InfluxBuckets(Enum):
     """
     Contains strings of all used InfluxDB buckets
     """
+
     UAL_MINUTE_CALIBRATION_BUCKET = "ual-minute-calibration"
     UAL_MINUTE_MEASUREMENT_BUCKET = "ual-minute-measurement"
     UAL_HOUR_INFERENCE_BUCKET = "ual-hour-inference"

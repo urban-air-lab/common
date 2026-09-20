@@ -7,6 +7,7 @@ class Sensors(Enum):
     """
     All current in use custom sensors from UrbanAirLab project
     """
+
     UAL_1 = "ual-1"
     UAL_2 = "ual-2"
     UAL_3 = "ual-3"
@@ -18,12 +19,12 @@ class Sensors(Enum):
 
 
 class SensorSource:
-    def __init__(self, bucket: InfluxBuckets, sensor: Sensors ):
+    def __init__(self, bucket: InfluxBuckets, sensor: Sensors):
         self.bucket: InfluxBuckets = bucket
         self.sensor: Sensors = sensor
 
     @classmethod
-    def from_strings(cls, bucket: str, sensor:str) -> "SensorSource":
+    def from_strings(cls, bucket: str, sensor: str) -> "SensorSource":
         bucket: InfluxBuckets = InfluxBuckets(bucket)
         sensor: Sensors = Sensors(sensor)
         return SensorSource(bucket, sensor)

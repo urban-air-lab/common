@@ -6,6 +6,7 @@ from ual.logging import get_logger
 
 log = get_logger("data processor")
 
+
 class DataProcessor:
     def __init__(self, inputs: pd.DataFrame, targets: pd.DataFrame = None):
         if inputs is not None and inputs.empty:
@@ -33,13 +34,13 @@ class DataProcessor:
         return self
 
     def remove_input_outliers(self, outlier_range=3):
-        z_scores = np.abs(stats.zscore(self.inputs, nan_policy='omit'))
+        z_scores = np.abs(stats.zscore(self.inputs, nan_policy="omit"))
         mask = (z_scores < outlier_range).all(axis=1)
         self.inputs = self.inputs[mask]
         return self
 
     def remove_target_outliers(self, outlier_range=3):
-        z_scores = np.abs(stats.zscore(self.targets, nan_policy='omit'))
+        z_scores = np.abs(stats.zscore(self.targets, nan_policy="omit"))
         mask = (z_scores < outlier_range).all(axis=1)
         self.targets = self.targets[mask]
         return self
@@ -52,7 +53,9 @@ class DataProcessor:
 
     def align_dataframes_by_time(self):
         if self.targets is not None:
-            self.inputs, self.targets = align_dataframes_by_time(self.inputs, self.targets)
+            self.inputs, self.targets = align_dataframes_by_time(
+                self.inputs, self.targets
+            )
         return self
 
     def calculate_w_a_difference(self, gases):
@@ -83,7 +86,9 @@ def calculate_w_a_difference(dataframe: pd.DataFrame, gases: list) -> pd.DataFra
     return dataframe
 
 
-def align_dataframes_by_time(df1: pd.DataFrame, df2: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
+def align_dataframes_by_time(
+    df1: pd.DataFrame, df2: pd.DataFrame
+) -> (pd.DataFrame, pd.DataFrame):
     df1.index = pd.to_datetime(df1.index)
     df2.index = pd.to_datetime(df2.index)
 

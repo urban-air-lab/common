@@ -16,84 +16,109 @@ def test_builder_without_bucket():
 
 def test_builder_bucket():
     with pytest.raises(ValueError, match="time range must be set!"):
-        InfluxQueryBuilder() \
-            .set_bucket(InfluxBuckets.TEST_BUCKET.value) \
-            .build()
+        InfluxQueryBuilder().set_bucket(InfluxBuckets.TEST_BUCKET.value).build()
 
 
 def test_builder_bucket_range():
     with pytest.raises(ValueError, match="topic must be set!"):
-        InfluxQueryBuilder() \
-            .set_bucket(InfluxBuckets.TEST_BUCKET.value) \
-            .set_range("2024-10-22T00:00:00Z", "2024-10-22T23:00:00Z") \
-            .build()
+        InfluxQueryBuilder().set_bucket(InfluxBuckets.TEST_BUCKET.value).set_range(
+            "2024-10-22T00:00:00Z", "2024-10-22T23:00:00Z"
+        ).build()
 
 
 def test_builder_bucket_range_invalid_dates():
-    with pytest.raises(ValueError, match="No valid date format - must be yyyy-mm-ddTHH:MM:SSZ"):
-        InfluxQueryBuilder() \
-            .set_bucket(InfluxBuckets.TEST_BUCKET.value) \
-            .set_range("2024-10-22 00:00:00", "2024-10-22 23:00:00") \
-            .build()
+    with pytest.raises(
+        ValueError, match="No valid date format - must be yyyy-mm-ddTHH:MM:SSZ"
+    ):
+        InfluxQueryBuilder().set_bucket(InfluxBuckets.TEST_BUCKET.value).set_range(
+            "2024-10-22 00:00:00", "2024-10-22 23:00:00"
+        ).build()
 
 
 def test_builder_bucket_range_invalid_start_date():
-    with pytest.raises(ValueError, match="No valid date format - must be yyyy-mm-ddTHH:MM:SSZ"):
-        InfluxQueryBuilder() \
-            .set_bucket(InfluxBuckets.TEST_BUCKET.value) \
-            .set_range("2024-10-22 00:00:00", "2024-10-22T23:00:00Z") \
-            .build()
+    with pytest.raises(
+        ValueError, match="No valid date format - must be yyyy-mm-ddTHH:MM:SSZ"
+    ):
+        InfluxQueryBuilder().set_bucket(InfluxBuckets.TEST_BUCKET.value).set_range(
+            "2024-10-22 00:00:00", "2024-10-22T23:00:00Z"
+        ).build()
 
 
 def test_builder_bucket_range_end_date():
-    with pytest.raises(ValueError, match="No valid date format - must be yyyy-mm-ddTHH:MM:SSZ"):
-        InfluxQueryBuilder() \
-            .set_bucket(InfluxBuckets.TEST_BUCKET.value) \
-            .set_range("2024-10-22T00:00:00Z", "2024-10-22 23:00:00") \
-            .build()
+    with pytest.raises(
+        ValueError, match="No valid date format - must be yyyy-mm-ddTHH:MM:SSZ"
+    ):
+        InfluxQueryBuilder().set_bucket(InfluxBuckets.TEST_BUCKET.value).set_range(
+            "2024-10-22T00:00:00Z", "2024-10-22 23:00:00"
+        ).build()
 
 
 def test_builder_bucket_range_topic():
-    query = InfluxQueryBuilder() \
-        .set_bucket(InfluxBuckets.UAL_MINUTE_CALIBRATION_BUCKET.value) \
-        .set_range("2024-10-22T00:00:00Z", "2024-10-22T23:00:00Z") \
-        .set_topic("ual-1") \
+    query = (
+        InfluxQueryBuilder()
+        .set_bucket(InfluxBuckets.UAL_MINUTE_CALIBRATION_BUCKET.value)
+        .set_range("2024-10-22T00:00:00Z", "2024-10-22T23:00:00Z")
+        .set_topic("ual-1")
         .build()
-    assert query == '''from(bucket: "ual-minute-calibration")|> range(start: 2024-10-22T00:00:00Z, stop: 2024-10-22T23:00:00Z)|> filter(fn: (r) => r.topic == "sensors/calibration/ual-1")|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")'''
+    )
+    assert (
+        query
+        == """from(bucket: "ual-minute-calibration")|> range(start: 2024-10-22T00:00:00Z, stop: 2024-10-22T23:00:00Z)|> filter(fn: (r) => r.topic == "sensors/calibration/ual-1")|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")"""
+    )
 
 
 def test_builder_bucket_range_topic_fields():
-    query = InfluxQueryBuilder() \
-        .set_bucket(InfluxBuckets.UAL_MINUTE_CALIBRATION_BUCKET.value) \
-        .set_range("2024-10-22T00:00:00Z", "2024-10-22T23:00:00Z") \
-        .set_topic("ual-1") \
-        .set_fields(["CO", "NO"]) \
+    query = (
+        InfluxQueryBuilder()
+        .set_bucket(InfluxBuckets.UAL_MINUTE_CALIBRATION_BUCKET.value)
+        .set_range("2024-10-22T00:00:00Z", "2024-10-22T23:00:00Z")
+        .set_topic("ual-1")
+        .set_fields(["CO", "NO"])
         .build()
-    assert query == '''from(bucket: "ual-minute-calibration")|> range(start: 2024-10-22T00:00:00Z, stop: 2024-10-22T23:00:00Z)|> filter(fn: (r) => r.topic == "sensors/calibration/ual-1")|> filter(fn: (r) => r._field == "CO" or r._field == "NO")|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")'''
+    )
+    assert (
+        query
+        == """from(bucket: "ual-minute-calibration")|> range(start: 2024-10-22T00:00:00Z, stop: 2024-10-22T23:00:00Z)|> filter(fn: (r) => r.topic == "sensors/calibration/ual-1")|> filter(fn: (r) => r._field == "CO" or r._field == "NO")|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")"""
+    )
 
 
 def test_builder_bucket_range_to_0():
-    query = (InfluxQueryBuilder()
-             .set_bucket(InfluxBuckets.UAL_MINUTE_CALIBRATION_BUCKET.value)
-             .set_range_to_start_0()
-             .set_topic("ual-1")
-             .build())
-    assert query == '''from(bucket: "ual-minute-calibration")|> range(start:0)|> filter(fn: (r) => r.topic == "sensors/calibration/ual-1")|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")'''
+    query = (
+        InfluxQueryBuilder()
+        .set_bucket(InfluxBuckets.UAL_MINUTE_CALIBRATION_BUCKET.value)
+        .set_range_to_start_0()
+        .set_topic("ual-1")
+        .build()
+    )
+    assert (
+        query
+        == """from(bucket: "ual-minute-calibration")|> range(start:0)|> filter(fn: (r) => r.topic == "sensors/calibration/ual-1")|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")"""
+    )
 
 
 def test_builder_bucket_add_one_minute():
-    query = InfluxQueryBuilder() \
-        .set_bucket(InfluxBuckets.UAL_MINUTE_CALIBRATION_BUCKET.value) \
-        .set_range("2024-10-22T00:00:00Z", "2024-10-22T23:00:00Z", True) \
-        .set_topic("ual-1") \
+    query = (
+        InfluxQueryBuilder()
+        .set_bucket(InfluxBuckets.UAL_MINUTE_CALIBRATION_BUCKET.value)
+        .set_range("2024-10-22T00:00:00Z", "2024-10-22T23:00:00Z", True)
+        .set_topic("ual-1")
         .build()
-    assert query == '''from(bucket: "ual-minute-calibration")|> range(start: 2024-10-22T00:00:00Z, stop: 2024-10-22T23:01:00Z)|> filter(fn: (r) => r.topic == "sensors/calibration/ual-1")|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")'''
+    )
+    assert (
+        query
+        == """from(bucket: "ual-minute-calibration")|> range(start: 2024-10-22T00:00:00Z, stop: 2024-10-22T23:01:00Z)|> filter(fn: (r) => r.topic == "sensors/calibration/ual-1")|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")"""
+    )
 
 
 def test_builder_bucket_add_not_one_minute():
-    query = InfluxQueryBuilder() \
-        .set_bucket(InfluxBuckets.UAL_MINUTE_CALIBRATION_BUCKET.value) \
-        .set_range("2024-10-22T00:00:00Z", "2024-10-22T23:00:00Z", False) \
-        .set_topic("ual-1") \
+    query = (
+        InfluxQueryBuilder()
+        .set_bucket(InfluxBuckets.UAL_MINUTE_CALIBRATION_BUCKET.value)
+        .set_range("2024-10-22T00:00:00Z", "2024-10-22T23:00:00Z", False)
+        .set_topic("ual-1")
         .build()
-    assert query == '''from(bucket: "ual-minute-calibration")|> range(start: 2024-10-22T00:00:00Z, stop: 2024-10-22T23:00:00Z)|> filter(fn: (r) => r.topic == "sensors/calibration/ual-1")|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")'''
+    )
+    assert (
+        query
+        == """from(bucket: "ual-minute-calibration")|> range(start: 2024-10-22T00:00:00Z, stop: 2024-10-22T23:00:00Z)|> filter(fn: (r) => r.topic == "sensors/calibration/ual-1")|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")"""
+    )
