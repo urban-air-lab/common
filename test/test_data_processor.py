@@ -51,6 +51,17 @@ def test_to_hourly(sample_inputs, sample_targets):
     processed = processor.to_hourly()
     assert isinstance(processed.get_inputs(), pd.DataFrame)
     assert isinstance(processor.get_targets(), pd.DataFrame)
+    assert len(processor.get_targets()) == 1
+    assert len(processor.inputs) == 1
+
+
+def test_to_span(sample_inputs, sample_targets):
+    processor = DataProcessor(inputs=sample_inputs, targets=sample_targets)
+    processed  = processor.to_timespan("5Min")
+    assert isinstance(processed.get_inputs(), pd.DataFrame)
+    assert isinstance(processor.get_targets(), pd.DataFrame)
+    assert len(processor.get_targets()) == 3
+    assert len(processor.get_inputs()) == 3
 
 
 def test_remove_nan(sample_inputs, sample_targets):

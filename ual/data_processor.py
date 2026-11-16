@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from pandas import DataFrame
 from scipy import stats
 
 from ual.logging import get_logger
@@ -31,6 +32,12 @@ class DataProcessor:
         self.inputs = self.inputs.resample("d").mean()
         if self.targets is not None:
             self.targets = self.targets.resample("d").mean()
+        return self
+
+    def to_timespan(self, time_span: str):
+        self.inputs = self.inputs.groupby(pd.Grouper(freq=time_span)).aggregate(np.mean)
+        if self.targets is not None:
+            self.targets = self.targets.groupby(pd.Grouper(freq=time_span)).aggregate(np.mean)
         return self
 
     def remove_input_outliers(self, outlier_range=3):
