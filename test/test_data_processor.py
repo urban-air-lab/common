@@ -185,3 +185,11 @@ def test_align_dataframes_by_time_invalid_datetime_strings_raises():
 
     with pytest.raises(ValueError):
         align_dataframes_by_time(df1, df2)
+
+def test_get_dataframe(sample_inputs, sample_targets):
+    processor = DataProcessor(inputs=sample_inputs, targets=sample_targets)
+    data = processor.get_dataframe()
+    columns = data.columns
+    assert isinstance(data, pd.DataFrame)
+    assert len(columns) == 7
+

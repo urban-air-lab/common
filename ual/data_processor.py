@@ -19,8 +19,8 @@ class DataProcessor:
         if targets is not None and not isinstance(targets.index, pd.DatetimeIndex):
             raise TypeError("The targets index must be a DatetimeIndex.")
 
-        self.inputs = inputs
-        self.targets = targets
+        self.inputs: pd.DataFrame = inputs
+        self.targets: pd.DataFrame = targets
 
     def to_hourly(self):
         self.inputs = self.inputs.resample("h").mean()
@@ -77,6 +77,11 @@ class DataProcessor:
             raise ValueError("No targets were provided to DataProcessor.")
         return self.targets
 
+    def get_dataframe(self):
+        if self.targets is None:
+            return self.inputs
+        return pd.concat([self.inputs, self.targets], axis=1)
+
 
 def calculate_w_a_difference(dataframe: pd.DataFrame, gases: list) -> pd.DataFrame:
     if not gases:
@@ -107,3 +112,4 @@ def align_dataframes_by_time(
     df1_aligned = df1.loc[common_times]
     df2_aligned = df2.loc[common_times]
     return df1_aligned, df2_aligned
+
