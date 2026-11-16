@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-from pandas import DataFrame
 from scipy import stats
 
 from ual.logging import get_logger
