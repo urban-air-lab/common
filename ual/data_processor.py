@@ -36,7 +36,9 @@ class DataProcessor:
     def to_timespan(self, time_span: str):
         self.inputs = self.inputs.groupby(pd.Grouper(freq=time_span)).aggregate(np.mean)
         if self.targets is not None:
-            self.targets = self.targets.groupby(pd.Grouper(freq=time_span)).aggregate(np.mean)
+            self.targets = self.targets.groupby(pd.Grouper(freq=time_span)).aggregate(
+                np.mean
+            )
         return self
 
     def remove_input_outliers(self, outlier_range=3):
@@ -111,4 +113,3 @@ class DataProcessor:
         df1_aligned = df1.loc[common_times]
         df2_aligned = df2.loc[common_times]
         return df1_aligned, df2_aligned
-

@@ -57,7 +57,7 @@ def test_to_hourly(sample_inputs, sample_targets):
 
 def test_to_span(sample_inputs, sample_targets):
     processor = DataProcessor(inputs=sample_inputs, targets=sample_targets)
-    processed  = processor.to_timespan("5Min")
+    processed = processor.to_timespan("5Min")
     assert isinstance(processed.get_inputs(), pd.DataFrame)
     assert isinstance(processor.get_targets(), pd.DataFrame)
     assert len(processor.get_targets()) == 3
@@ -186,10 +186,10 @@ def test_align_dataframes_by_time_invalid_datetime_strings_raises():
     with pytest.raises(ValueError):
         align_dataframes_by_time(df1, df2)
 
+
 def test_get_dataframe(sample_inputs, sample_targets):
     processor = DataProcessor(inputs=sample_inputs, targets=sample_targets)
     data = processor.get_dataframe()
     columns = data.columns
     assert isinstance(data, pd.DataFrame)
     assert len(columns) == 7
-

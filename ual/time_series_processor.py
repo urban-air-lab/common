@@ -5,6 +5,7 @@ from ual.logging import get_logger
 
 log = get_logger("time series processor")
 
+
 class TimeSeriesProcessor:
     def __init__(self, inputs: pd.DataFrame, targets: pd.DataFrame = None):
         if inputs is not None and inputs.empty:
@@ -20,7 +21,9 @@ class TimeSeriesProcessor:
         self.targets: pd.DataFrame = targets
 
     def add_timeseries_feature(self, freq: str, steps: int = 1):
-        self.inputs = self._add_timeseries_features(self.inputs, self._get_columns(), freq, steps)
+        self.inputs = self._add_timeseries_features(
+            self.inputs, self._get_columns(), freq, steps
+        )
         return self
 
     def get_inputs(self) -> pd.DataFrame:
