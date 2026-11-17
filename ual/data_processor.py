@@ -59,13 +59,13 @@ class DataProcessor:
 
     def align_dataframes_by_time(self):
         if self.targets is not None:
-            self.inputs, self.targets = align_dataframes_by_time(
+            self.inputs, self.targets = self._align_dataframes_by_time(
                 self.inputs, self.targets
             )
         return self
 
     def calculate_w_a_difference(self, gases):
-        self.inputs = calculate_w_a_difference(self.inputs, gases)
+        self.inputs = self._calculate_w_a_difference(self.inputs, gases)
         return self
 
     def get_inputs(self):
@@ -81,34 +81,34 @@ class DataProcessor:
             return self.inputs
         return pd.concat([self.inputs, self.targets], axis=1)
 
+    @staticmethod
+    def _calculate_w_a_difference(dataframe: pd.DataFrame, gases: list) -> pd.DataFrame:
+        if not gases:
+            raise ValueError("No gases in list")
+        if dataframe.empty:
+            raise ValueError("Dataframe is empty")
+        for gas in gases:
+            w_column = f"RAW_ADC_{gas}_W"
+            a_column = f"RAW_ADC_{gas}_A"
+            if w_column in dataframe.columns and a_column in dataframe.columns:
+                dataframe[f"{gas}_W_A"] = dataframe[w_column] - dataframe[a_column]
+            else:
+                print(f"Warning: Columns for {gas} not found in the dataframe.")
+        return dataframe
 
-def calculate_w_a_difference(dataframe: pd.DataFrame, gases: list) -> pd.DataFrame:
-    if not gases:
-        raise ValueError("No gases in list")
-    if dataframe.empty:
-        raise ValueError("Dataframe is empty")
-    for gas in gases:
-        w_column = f"RAW_ADC_{gas}_W"
-        a_column = f"RAW_ADC_{gas}_A"
-        if w_column in dataframe.columns and a_column in dataframe.columns:
-            dataframe[f"{gas}_W_A"] = dataframe[w_column] - dataframe[a_column]
-        else:
-            print(f"Warning: Columns for {gas} not found in the dataframe.")
-    return dataframe
+    @staticmethod
+    def _align_dataframes_by_time(
+        df1: pd.DataFrame, df2: pd.DataFrame
+    ) -> (pd.DataFrame, pd.DataFrame):
+        df1.index = pd.to_datetime(df1.index)
+        df2.index = pd.to_datetime(df2.index)
 
+        df1.index = df1.index.floor("s")
+        df2.index = df2.index.floor("s")
 
-def align_dataframes_by_time(
-    df1: pd.DataFrame, df2: pd.DataFrame
-) -> (pd.DataFrame, pd.DataFrame):
-    df1.index = pd.to_datetime(df1.index)
-    df2.index = pd.to_datetime(df2.index)
+        common_times = df1.index.intersection(df2.index)
 
-    df1.index = df1.index.floor("s")
-    df2.index = df2.index.floor("s")
-
-    common_times = df1.index.intersection(df2.index)
-
-    df1_aligned = df1.loc[common_times]
-    df2_aligned = df2.loc[common_times]
-    return df1_aligned, df2_aligned
+        df1_aligned = df1.loc[common_times]
+        df2_aligned = df2.loc[common_times]
+        return df1_aligned, df2_aligned
 
