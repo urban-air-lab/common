@@ -5,11 +5,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from ual.data_processor import (
-    DataProcessor,
-    align_dataframes_by_time,
-    calculate_w_a_difference,
-)
+from ual.data_processor import DataProcessor
 
 
 @pytest.fixture
@@ -76,14 +72,14 @@ def test_remove_nan(sample_inputs, sample_targets):
 def test_no_gases_list_raises_value_error():
     df = pd.DataFrame({"RAW_ADC_NO_W": [1], "RAW_ADC_NO_A": [0]})
     with pytest.raises(ValueError) as e:
-        calculate_w_a_difference(df, [])
+        DataProcessor._calculate_w_a_difference(df, [])
     assert str(e.value) == "No gases in list"
 
 
 def test_empty_dataframe_raises_value_error():
     df_empty = pd.DataFrame()
     with pytest.raises(ValueError) as e:
-        calculate_w_a_difference(df_empty, ["NO"])
+        DataProcessor._calculate_w_a_difference(df_empty, ["NO"])
     assert "Dataframe is empty" in str(e.value)
 
 
@@ -99,7 +95,7 @@ def test_basic_NO_CO_difference():
     )
     # Work on a copy so we can test identity
     df_copy = df.copy()
-    result = calculate_w_a_difference(df_copy, ["NO", "CO"])
+    result = DataProcessor._calculate_w_a_difference(df_copy, ["NO", "CO"])
 
     # should modify in-place and return the same object
     assert result is df_copy
@@ -118,7 +114,7 @@ def test_align_dataframes_by_time():
         index=pd.date_range("2021-01-04", periods=7, freq="D"),
     )
 
-    a1, a2 = align_dataframes_by_time(df1.copy(), df2.copy())
+    a1, a2 = DataProcessor._align_dataframes_by_time(df1.copy(), df2.copy())
 
     expected_idx = pd.date_range("2021-01-04", "2021-01-07", freq="D")
     pd.testing.assert_index_equal(a1.index, expected_idx)
@@ -135,7 +131,7 @@ def test_align_dataframes_by_time_returns_empty_dataframes():
         data={"v2": [4, 5, 6]}, index=pd.date_range("2021-01-10", periods=3, freq="D")
     )
 
-    a1, a2 = align_dataframes_by_time(df1, df2)
+    a1, a2 = DataProcessor._align_dataframes_by_time(df1, df2)
 
     assert isinstance(a1, pd.DataFrame)
     assert isinstance(a2, pd.DataFrame)
@@ -153,7 +149,7 @@ def test_align_dataframes_by_time_string_and_datetime_index_conversion():
         index=pd.to_datetime(["2021-06-02", "2021-06-03", "2021-06-04"]),
     )
 
-    a1, a2 = align_dataframes_by_time(df1, df2)
+    a1, a2 = DataProcessor._align_dataframes_by_time(df1, df2)
 
     expected = pd.DatetimeIndex(["2021-06-02", "2021-06-03"])
     pd.testing.assert_index_equal(a1.index, expected)
@@ -171,7 +167,7 @@ def test_align_dataframes_by_time_empty_input_dataframes():
     df1 = pd.DataFrame(columns=["a"], index=[])
     df2 = pd.DataFrame(columns=["b"], index=[])
 
-    a1, a2 = align_dataframes_by_time(df1, df2)
+    a1, a2 = DataProcessor._align_dataframes_by_time(df1, df2)
 
     assert a1.empty and a2.empty
     assert list(a1.columns) == ["a"]
@@ -184,7 +180,7 @@ def test_align_dataframes_by_time_invalid_datetime_strings_raises():
     df2 = pd.DataFrame({"y": [2]}, index=["2021-01-01"])
 
     with pytest.raises(ValueError):
-        align_dataframes_by_time(df1, df2)
+        DataProcessor._align_dataframes_by_time(df1, df2)
 
 
 def test_get_dataframe(sample_inputs, sample_targets):
