@@ -24,6 +24,10 @@ class TimeSeriesProcessor:
         self.inputs = self._add_timeseries_features(
             self.inputs, self._get_columns(), freq, steps
         )
+        # rows at the edges (or next to gaps) have no complete window -> drop them and their targets
+        self.inputs = self.inputs.dropna()
+        if self.targets is not None:
+            self.targets = self.targets.loc[self.targets.index.isin(self.inputs.index)]
         return self
 
     def get_inputs(self) -> pd.DataFrame:

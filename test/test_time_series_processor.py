@@ -74,29 +74,40 @@ def test_add_timeseries_feature_values(sample_inputs):
         .add_timeseries_feature("min", steps=1)
         .get_inputs()
     )
-    np.testing.assert_array_equal(
-        inputs["a_t-1"].to_numpy(), [np.nan, 1.0, 2.0, 3.0, 4.0]
-    )
-    np.testing.assert_array_equal(
-        inputs["a_t+1"].to_numpy(), [2.0, 3.0, 4.0, 5.0, np.nan]
-    )
+    # first and last row have an incomplete window and are dropped
+    assert list(inputs.index) == list(sample_inputs.index[1:-1])
+    np.testing.assert_array_equal(inputs["a"].to_numpy(), [2.0, 3.0, 4.0])
+    np.testing.assert_array_equal(inputs["a_t-1"].to_numpy(), [1.0, 2.0, 3.0])
+    np.testing.assert_array_equal(inputs["a_t+1"].to_numpy(), [3.0, 4.0, 5.0])
 
 
-def test_add_timeseries_feature_keeps_gaps_as_nan(sample_inputs):
-    # drop the 3rd minute: its neighbours must become NaN instead of shifting rows
-    gapped = sample_inputs.drop(sample_inputs.index[2])
+def test_add_timeseries_feature_drops_edges_for_more_steps(sample_inputs):
+    inputs = (
+        TimeSeriesProcessor(inputs=sample_inputs)
+        .add_timeseries_feature("min", steps=2)
+        .get_inputs()
+    )
+    assert list(inputs.index) == [sample_inputs.index[2]]
+    assert not inputs.isna().any().any()
+
+
+def test_add_timeseries_feature_drops_rows_next_to_gaps():
+    # drop 00:03: its neighbours must not be filled by shifting rows, so they get dropped
+    dates = pd.date_range(start="2026-01-01 00:00", periods=7, freq="min")
+    data = pd.DataFrame({"a": np.arange(7, dtype=float)}, index=dates)
+    gapped = data.drop(dates[3])
     inputs = (
         TimeSeriesProcessor(inputs=gapped).add_timeseries_feature("min").get_inputs()
     )
-    np.testing.assert_array_equal(
-        inputs["a_t-1"].to_numpy(), [np.nan, 1.0, np.nan, 4.0]
-    )
-    np.testing.assert_array_equal(
-        inputs["a_t+1"].to_numpy(), [2.0, np.nan, 5.0, np.nan]
-    )
+    assert list(inputs.index) == [dates[1], dates[5]]
+    np.testing.assert_array_equal(inputs["a_t-1"].to_numpy(), [0.0, 4.0])
+    np.testing.assert_array_equal(inputs["a_t+1"].to_numpy(), [2.0, 6.0])
 
 
-def test_add_timeseries_feature_does_not_touch_targets(sample_inputs, sample_targets):
+def test_add_timeseries_feature_drops_matching_targets(sample_inputs, sample_targets):
     processor = TimeSeriesProcessor(inputs=sample_inputs, targets=sample_targets)
     processor.add_timeseries_feature("min")
-    assert list(processor.get_targets().columns) == ["target"]
+    targets = processor.get_targets()
+    assert list(targets.columns) == ["target"]
+    assert targets.index.equals(processor.get_inputs().index)
+    np.testing.assert_array_equal(targets["target"].to_numpy(), [1.0, 2.0, 3.0])
